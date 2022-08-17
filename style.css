@@ -1,0 +1,83 @@
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+ul, li {
+    list-style: none;
+}
+li, input {
+    cursor: pointer;
+}
+
+body {
+    background-color: peachpuff;
+    padding: 0 20px;
+    height: 100%;
+    font-style: italic;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+#container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background: pink;
+    height: 100%;
+}
+#header {
+    text-align: center;
+    margin-bottom: 40px;
+    user-select: none;
+}
+#list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    /* align-items: center; */
+    justify-content: space-around;
+}
+.list-element {
+    display: flex;
+    height: 30px;
+    margin: 10px;
+    min-width: 400px;
+    flex-direction: row;
+    padding: 8px 2px;
+    /* align-items: center; */
+    justify-content: space-around;
+    border-radius: 15px;
+}
+.todo-text {
+    width: 75%;
+    border-radius: 4px;
+    /* background-color: blue; */
+}
+.check { 
+    background-color: green;
+}
+
+.white {
+    color: white;
+}
+
+.highlight {
+    background-color: palevioletred;
+    opacity: 0.5;
+}
+.yellow {
+    background-color: yellow;
+}
+.green {
+    background-color: green;
+    opacity: 0.8;
+}
+.red {
+    background-color: red;
+    opacity: 0.8;
+}
+
