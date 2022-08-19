@@ -11,8 +11,11 @@
 ul, li {
     list-style: none;
 }
-li, input {
+button, li, input {
     cursor: pointer;
+    font-family: inherit;
+    font-style: inherit;
+    font-size: 17px;
 }
 
 body {
@@ -21,6 +24,7 @@ body {
     height: 100%;
     font-style: italic;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: lightcoral;
 }
 #container {
     max-width: 1300px;
@@ -28,6 +32,13 @@ body {
     padding: 40px 20px;
     background: pink;
     height: 100%;
+    text-align: center;
+}
+button {
+    height: 40px;
+    width: 130px;
+    border-radius: 20px;
+    margin: 0 15px 25px;
 }
 #header {
     text-align: center;
@@ -43,12 +54,12 @@ body {
 }
 .list-element {
     display: flex;
-    height: 30px;
+    height: 70px;
     margin: 10px;
     min-width: 400px;
     flex-direction: row;
     padding: 8px 2px;
-    /* align-items: center; */
+    align-items: center;
     justify-content: space-around;
     border-radius: 15px;
 }
@@ -56,13 +67,16 @@ body {
     width: 75%;
     border-radius: 4px;
     /* background-color: blue; */
+    font-size: 25px;
 }
 .check { 
     background-color: green;
+    height: 30px;
+    width: 30px;
 }
 
-.white {
-    color: white;
+.black {
+    color: black;
 }
 
 .highlight {
@@ -79,5 +93,9 @@ body {
 .red {
     background-color: red;
     opacity: 0.8;
+}
+.night-mode {
+    color: black;
+    background: grey;
 }
 
