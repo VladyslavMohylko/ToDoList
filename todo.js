@@ -25,6 +25,7 @@ function createTask(desc) {
 const createTaskListener = ({ key, target: { value } } = {}) => {
     if (key === 'Enter') {
         taskList.appendChild(createTask(value))
+        addNewTask.value = ''
     }
 }
 
