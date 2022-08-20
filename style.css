@@ -63,7 +63,7 @@ button {
     justify-content: space-around;
     border-radius: 15px;
 }
-.todo-text {
+.todo-text, #addTask {
     width: 75%;
     border-radius: 4px;
     /* background-color: blue; */
