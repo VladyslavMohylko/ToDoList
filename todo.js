@@ -1,4 +1,4 @@
-const removeTask = document.getElementById('removeListEl')
+
 const addTask = document.getElementById('addListEl')
 const taskList = document.querySelector('ul')
 const listElement = [...document.querySelectorAll('li')]
@@ -14,9 +14,6 @@ addTask.addEventListener('click', (e) => {
     // const clone = elem.cloneNode(true)
     // const c = taskList.appendChild(clone)
     // listElement.push(c)
-})
-removeTask.addEventListener('click', (e) => {
-    taskList.lastElementChild.remove()
 })
 
 // як не срачка, то пердячка... підсвічує нові задачі, але повернувся баг із кривою підсвіткою
