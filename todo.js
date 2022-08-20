@@ -1,23 +1,30 @@
-
-const addTask = document.getElementById('addListEl')
 const taskList = document.querySelector('ul')
 const listElement = [...document.querySelectorAll('li')]
 const confirmTask = [...document.getElementsByClassName('check')]
 const taskText = [...document.getElementsByClassName('todo-text')]
+const addNewTask = document.getElementById('addTask')
 
-addTask.addEventListener('click', (e) => {
-    const c = taskList.insertAdjacentHTML('beforeend' , '<li class="list-element"><input class="check" type="checkbox"><input class="todo-text" type="text"></li>')
-    listElement.push(c)
+function createTask(desc) {
+    const li = document.createElement('li')
+    li.className = 'list-element'
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.className = 'todo-text'
+    input.value = desc
+    const checkbox = document.createElement('input')
+    checkbox.type = 'checkbox'
+    checkbox.className = 'check'
+    li.append(checkbox, input)
+    return li 
+}
 
-    // через клон (працює погано)
-    // const elem = taskList.querySelector('li')
-    // const clone = elem.cloneNode(true)
-    // const c = taskList.appendChild(clone)
-    // listElement.push(c)
+
+addNewTask.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+       taskList.appendChild(createTask(e.target.value)) 
+    }
 })
 
-// як не срачка, то пердячка... підсвічує нові задачі, але повернувся баг із кривою підсвіткою
-// і не працюють галочки-прапорці
 const highlight = (e) => {
     const target = e.target
     if (target.tagName === 'LI') {
@@ -35,16 +42,6 @@ const resetHighlight = (e) => {
 }
 
 taskList.addEventListener('mouseover', highlight)
-
-// полагодив баг підсвітки, але не підсвічує нові задачі
-// listElement.forEach((el) => {
-//     el.addEventListener('mouseover', (e) => {
-//         e.currentTarget.classList.add('highlight')
-//     })
-//     el.addEventListener('mouseout', (e) => {
-//         e.currentTarget.classList.remove('highlight')
-//     })
-// })
 
 taskText.forEach((el) => {
     el.addEventListener('input', (e) => {
