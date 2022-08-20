@@ -15,15 +15,35 @@ function createTask(desc) {
     checkbox.type = 'checkbox'
     checkbox.className = 'check'
     li.append(checkbox, input)
-    return li 
+    return li
+}
+
+const createTaskListener = ({ key, target: { value } } = {}) => {
+    if (key === 'Enter') {
+        taskList.appendChild(createTask(value))
+    }
+}
+
+const taskTextLisneter = (e) => {
+    e.currentTarget.classList.add('yellow')
+    console.dir(e.currentTarget)
+    if (e.currentTarget.value === '') {
+        e.currentTarget.classList.remove('yellow')
+    }
+}
+
+const confirmTaskListener = (e) => {
+    console.log(el)
+    if (el.nextElementSibling.value === '') {
+        el.nextElementSibling.classList.toggle('red')
+        el.parentElement.classList.toggle('red')
+    } else {
+        el.nextElementSibling.classList.toggle('green')
+        el.parentElement.classList.toggle('green')
+    }
 }
 
 
-addNewTask.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-       taskList.appendChild(createTask(e.target.value)) 
-    }
-})
 
 const highlight = (e) => {
     const target = e.target
@@ -41,27 +61,22 @@ const resetHighlight = (e) => {
     taskList.addEventListener('mouseover', highlight)
 }
 
-taskList.addEventListener('mouseover', highlight)
 
-taskText.forEach((el) => {
-    el.addEventListener('input', (e) => {
-        e.currentTarget.classList.add('yellow')
-        console.dir(e.currentTarget)
-        if (e.currentTarget.value === '') {
-            e.currentTarget.classList.remove('yellow')
-        }
-    })
-})
 
-confirmTask.forEach((el) => {
-    el.addEventListener('click', (e) => {
-        console.log(el)
-        if (el.nextElementSibling.value === '') {
-            el.nextElementSibling.classList.toggle('red')
-            el.parentElement.classList.toggle('red')
-        } else {
-            el.nextElementSibling.classList.toggle('green')
-            el.parentElement.classList.toggle('green')
-        }
+function initListeners() {
+    addNewTask.addEventListener('keydown', createTaskListener)
+
+    taskList.addEventListener('mouseover', highlight)
+
+    taskText.forEach((el) => {
+        el.addEventListener('input', taskTextLisneter)
     })
-})
+
+    confirmTask.forEach((el) => {
+        el.addEventListener('click', confirmTaskListener)
+    })
+}
+
+initListeners()
+
+
