@@ -3,6 +3,7 @@ const listElement = [...document.querySelectorAll('li')]
 const confirmTask = [...document.getElementsByClassName('check')]
 const taskText = [...document.getElementsByClassName('todo-text')]
 const addNewTask = document.getElementById('addTask')
+const searchTask = document.querySelector('#searchTask')
 
 function createTask(desc) {
     const li = document.createElement('li')
@@ -11,6 +12,13 @@ function createTask(desc) {
     input.type = 'text'
     input.className = 'todo-text'
     input.value = desc
+    input.addEventListener('focus', (event) => {
+        console.log('kekw:')
+        event.target.style.background = 'cyan';
+    });
+    input.addEventListener('blur', (event) => {
+        event.target.style.background = '';
+    });
     const checkbox = document.createElement('input')
     checkbox.type = 'checkbox'
     checkbox.className = 'check'
@@ -23,9 +31,12 @@ function createTask(desc) {
     return li
 }
 
+let taskTextik = []
 const createTaskListener = ({ key, target: { value } } = {}) => {
     if (key === 'Enter') {
         taskList.appendChild(createTask(value))
+        taskTextik = [...taskList.querySelectorAll('LI INPUT.todo-text')]
+        console.log(taskTextik)
         addNewTask.value = ''
     }
 }
@@ -34,27 +45,14 @@ function deleteTask(e) {
     e.currentTarget.parentElement.remove()
 }
 
-
-const taskTextLisneter = (e) => {
-    e.currentTarget.classList.add('yellow')
-    console.dir(e.currentTarget)
-    if (e.currentTarget.value === '') {
-        e.currentTarget.classList.remove('yellow')
-    }
+function searchTaskFunc() {
+    taskTextik.forEach((el) => {
+        if (addNewTask.value === el.value) {
+            el.scrollIntoView(true)
+            el.focus()
+        }
+    })
 }
-
-const confirmTaskListener = (e) => {
-    console.log(el)
-    if (el.nextElementSibling.value === '') {
-        el.nextElementSibling.classList.toggle('red')
-        el.parentElement.classList.toggle('red')
-    } else {
-        el.nextElementSibling.classList.toggle('green')
-        el.parentElement.classList.toggle('green')
-    }
-}
-
-
 
 const highlight = (e) => {
     const target = e.currentTarget
@@ -73,13 +71,7 @@ const resetHighlight = (e) => {
 function initListeners() {
     addNewTask.addEventListener('keydown', createTaskListener)
 
-    taskText.forEach((el) => {
-        el.addEventListener('input', taskTextLisneter)
-    })
-
-    confirmTask.forEach((el) => {
-        el.addEventListener('click', confirmTaskListener)
-    })
+    searchTask.addEventListener('click', searchTaskFunc)
 }
 
 initListeners()
