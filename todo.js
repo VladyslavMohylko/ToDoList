@@ -12,6 +12,13 @@ function createTask(desc) {
     input.type = 'text'
     input.className = 'todo-text'
     input.value = desc
+    input.addEventListener('focus', (event) => {
+        console.log('kekw:')
+        event.target.style.background = 'cyan';
+    });
+    input.addEventListener('blur', (event) => {
+        event.target.style.background = '';
+    });
     const checkbox = document.createElement('input')
     checkbox.type = 'checkbox'
     checkbox.className = 'check'
@@ -41,15 +48,8 @@ function deleteTask(e) {
 function searchTaskFunc() {
     taskTextik.forEach((el) => {
         if (addNewTask.value === el.value) {
-            alert(`Така задача - "${el.value}" вже існує`)
             el.scrollIntoView(true)
             el.focus()
-            el.addEventListener('focus', (event) => {
-                event.target.style.background = 'cyan';
-            });
-            el.addEventListener('blur', (event) => {
-                event.target.style.background = '';
-            });
         }
     })
 }
