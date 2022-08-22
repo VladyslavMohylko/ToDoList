@@ -19,7 +19,7 @@ function createTask(desc) {
     deleteBtn.className = 'delete-btn'
     deleteBtn.textContent = 'X'
     li.append(checkbox, input, deleteBtn)
-    li.addEventListener('click', deleteTask)
+    deleteBtn.addEventListener('click', deleteTask)
     li.addEventListener('mouseover', highlight)
     return li
 }
@@ -35,9 +35,7 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
 }
 
 function deleteTask(e) { 
-    if (e.target.className === 'delete-btn') {
-        e.currentTarget.remove()
-    }
+    e.currentTarget.parentElement.remove()
 }
 
 function searchTaskFunc() {
