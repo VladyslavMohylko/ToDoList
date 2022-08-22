@@ -19,6 +19,7 @@ function createTask(desc) {
     deleteBtn.textContent = 'X'
     li.append(checkbox, input, deleteBtn)
     li.addEventListener('click', deleteTask)
+    li.addEventListener('mouseover', highlight)
     return li
 }
 
@@ -58,27 +59,21 @@ const confirmTaskListener = (e) => {
 
 
 const highlight = (e) => {
-    const target = e.target
-    if (target.tagName === 'LI') {
-        target.classList.add('highlight')
-    }
-    taskList.removeEventListener('mouseover', highlight)
-    taskList.addEventListener('mouseout', resetHighlight)
+    const target = e.currentTarget
+    target.classList.add('highlight')
+    target.removeEventListener('mouseover', highlight)
+    target.addEventListener('mouseout', resetHighlight)
 }
 
 const resetHighlight = (e) => {
-    const target = e.target
+    const target = e.currentTarget
     target.classList.remove('highlight')
-    taskList.removeEventListener('mouseout', resetHighlight)
-    taskList.addEventListener('mouseover', highlight)
+    target.removeEventListener('mouseout', resetHighlight)
+    target.addEventListener('mouseover', highlight)
 }
-
-
 
 function initListeners() {
     addNewTask.addEventListener('keydown', createTaskListener)
-
-    taskList.addEventListener('mouseover', highlight)
 
     taskText.forEach((el) => {
         el.addEventListener('input', taskTextLisneter)
