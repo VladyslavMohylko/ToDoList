@@ -14,15 +14,27 @@ function createTask(desc) {
     const checkbox = document.createElement('input')
     checkbox.type = 'checkbox'
     checkbox.className = 'check'
-    li.append(checkbox, input)
+    const deleteBtn = document.createElement('button')
+    deleteBtn.className = 'delete-btn'
+    deleteBtn.textContent = 'X'
+    li.append(checkbox, input, deleteBtn)
+    li.addEventListener('click', deleteTask)
     return li
 }
 
 const createTaskListener = ({ key, target: { value } } = {}) => {
     if (key === 'Enter') {
         taskList.appendChild(createTask(value))
+        addNewTask.value = ''
     }
 }
+
+function deleteTask(e) { 
+    if (e.target.className === 'delete-btn') {
+        e.currentTarget.remove()
+    }
+}
+
 
 const taskTextLisneter = (e) => {
     e.currentTarget.classList.add('yellow')
