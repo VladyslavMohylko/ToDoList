@@ -56,26 +56,6 @@ function searchTaskFunc() {
     })
 }
 
-// const taskTextLisneter = (e) => {
-//     console.dir(e)
-//     e.currentTarget.classList.add('yellow')
-//     console.dir(e.currentTarget)
-//     if (e.currentTarget.value === '') {
-//         e.currentTarget.classList.remove('yellow')
-//     }
-// }
-
-// const confirmTaskListener = (e) => {
-//     console.log(el)
-//     if (el.nextElementSibling.value === '') {
-//         el.nextElementSibling.classList.toggle('red')
-//         el.parentElement.classList.toggle('red')
-//     } else {
-//         el.nextElementSibling.classList.toggle('green')
-//         el.parentElement.classList.toggle('green')
-//     }
-// }
-
 const highlight = (e) => {
     const target = e.currentTarget
     target.classList.add('highlight')
@@ -92,14 +72,6 @@ const resetHighlight = (e) => {
 
 function initListeners() {
     addNewTask.addEventListener('keydown', createTaskListener)
-
-    // taskText.forEach((el) => {
-    //     el.addEventListener('input', taskTextLisneter)
-    // })
-
-    // confirmTask.forEach((el) => {
-    //     el.addEventListener('click', confirmTaskListener)
-    // })
 
     searchTask.addEventListener('click', searchTaskFunc)
 }
