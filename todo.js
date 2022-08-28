@@ -46,26 +46,20 @@ function deleteTask(e) {
 }
 
 function searchTaskFunc() {
-    taskTextik.forEach((el) => {
-        // el.addEventListener('focusout', () => {
-        //     console.dir([...taskList.children])
-        //     console.log(taskList.childNodes)
-        //     console.dir(taskList.children[1])
-        //     if (taskList.children.style.display = 'none') {
-        //         taskList.children.style.display = 'flex'
-        //     } 
-        // });
-        if (addNewTask.value === el.value) {
-            console.log(el.parentElement)
-            el.parentElement.style.display = 'flex'
-            el.scrollIntoView(true)
-            el.focus()
-            el.addEventListener('focusout', () => {
-                el.parentElement.style.display = 'none'
-            });
-        } else el.parentElement.style.display = 'none'
 
+for (const el of taskTextik) {
+    if (addNewTask.value === el.value) {
+        console.log(el.parentElement)
+        el.parentElement.style.display = 'flex'
+        el.scrollIntoView(true)
+        el.focus()
+        el.addEventListener('focusout', () => {
+            Array.from(taskList.children).forEach((batya) => {
+            batya.style.display = 'flex'
+        })
     })
+    } else el.parentElement.style.display = 'none'
+  }
 }
 
 const highlight = (e) => {
