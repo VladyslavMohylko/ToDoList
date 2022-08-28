@@ -33,15 +33,20 @@ function createTask(desc) {
 
 let taskTextik = []
 const createTaskListener = ({ key, target: { value } } = {}) => {
-    if (key === 'Enter') {
+    if (key === 'Enter' && addNewTask.value !== '') {
+        for (const task of taskTextik) {
+            if (addNewTask.value === task.value) {
+                return;
+            }
+        }
         taskList.appendChild(createTask(value))
         taskTextik = [...taskList.querySelectorAll('LI INPUT.todo-text')]
-        console.log(taskTextik)
-        addNewTask.value = ''
+        console.log(taskTextik.value)
+        addNewTask.value = '';
     }
 }
 
-function deleteTask(e) { 
+function deleteTask(e) {
     e.currentTarget.parentElement.remove()
 }
 
