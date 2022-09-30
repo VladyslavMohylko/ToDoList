@@ -58,6 +58,7 @@ function searchTaskFunc() {
         }
     })
 }
+// поточна версія
 
 const highlight = (e) => {
     const target = e.currentTarget
