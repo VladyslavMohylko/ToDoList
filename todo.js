@@ -55,14 +55,21 @@ function deleteTask(e) {
 }
 
 function searchTaskFunc() {
-    taskTextik.forEach((el) => {
+    for (const el of taskTextik) {
         if (addNewTask.value === el.value) {
+            console.log(el.parentElement)
+            el.parentElement.style.display = 'flex'
             el.scrollIntoView(true)
             el.focus()
-        }
-    })
+            el.addEventListener('focusout', () => {
+                Array.from(taskList.children).forEach((parentEl) => {
+                parentEl.style.display = 'flex'
+            })
+        })
+        } else el.parentElement.style.display = 'none'
+      }
 }
-// поточна версія
+
 const progressFunc = () => {
     let progElements = [...taskList.children];
     let taskCount = progElements.length;
