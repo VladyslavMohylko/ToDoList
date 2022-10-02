@@ -59,15 +59,24 @@ function searchTaskFunc() {
         if (addNewTask.value === el.value) {
             console.log(el.parentElement)
             el.parentElement.style.display = 'flex'
-            el.scrollIntoView(true)
+            // el.scrollIntoView(true)
             el.focus()
             el.addEventListener('focusout', () => {
-                Array.from(taskList.children).forEach((parentEl) => {
-                parentEl.style.display = 'flex'
+                Array.from(taskList.children).forEach((childEl) => {
+                childEl.style.display = 'flex'
+                })
             })
-        })
-        } else el.parentElement.style.display = 'none'
+        } else {
+            el.parentElement.style.display = 'none'
+            addNewTask.addEventListener('click', () => {
+                el.parentElement.style.display = 'flex'
+            })
+        } 
       }
+}
+
+function searchTimer() {
+    setTimeout(searchTaskFunc, 2000);
 }
 
 const progressFunc = () => {
@@ -101,6 +110,8 @@ const resetHighlight = (e) => {
 
 function initListeners() {
     addNewTask.addEventListener('keydown', createTaskListener)
+
+    addNewTask.addEventListener('change', searchTimer)
 
     searchTask.addEventListener('click', searchTaskFunc)
 }
