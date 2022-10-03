@@ -58,20 +58,24 @@ function searchTaskFunc() {
     for (const el of taskTextik) {
         if (addNewTask.value === el.value) {
             console.log(el.parentElement)
+            Array.from(taskList.children).forEach((childEl) => {
+                childEl.style.display = 'none'
+            })
             el.parentElement.style.display = 'flex'
-            // el.scrollIntoView(true)
             el.focus()
             el.addEventListener('focusout', () => {
                 Array.from(taskList.children).forEach((childEl) => {
                 childEl.style.display = 'flex'
                 })
             })
-        } else {
-            el.parentElement.style.display = 'none'
-            addNewTask.addEventListener('click', () => {
-                el.parentElement.style.display = 'flex'
-            })
         } 
+        // else {
+        //     старий код
+        //     el.parentElement.style.display = 'none'
+        //     addNewTask.addEventListener('click', () => {
+        //         el.parentElement.style.display = 'flex'
+        //     })
+        // } 
       }
 }
 
