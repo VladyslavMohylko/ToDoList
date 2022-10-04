@@ -80,7 +80,18 @@ function searchTaskFunc() {
 }
 
 function searchTimer() {
-    setTimeout(searchTaskFunc, 2000);
+    setTimeout(searchTaskFunc, 0);
+}
+
+function searchHighlight() {
+    for (const el of taskTextik) {
+        if (addNewTask.value === el.value) {
+            addNewTask.classList.add('red')
+            return
+        } else {
+            addNewTask.classList.remove('red')
+        }
+    }
 }
 
 const progressFunc = () => {
@@ -116,6 +127,8 @@ function initListeners() {
     addNewTask.addEventListener('keydown', createTaskListener)
 
     addNewTask.addEventListener('change', searchTimer)
+
+    addNewTask.addEventListener('input', searchHighlight)
 
     searchTask.addEventListener('click', searchTaskFunc)
 }
