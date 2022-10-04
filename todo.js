@@ -5,6 +5,7 @@ const taskText = [...document.getElementsByClassName('todo-text')]
 const addNewTask = document.getElementById('addTask')
 const searchTask = document.querySelector('#searchTask')
 const progress = document.getElementById('progress')
+const findMessage = document.getElementById('searchMessage')
 
 function createTask(desc) {
     const li = document.createElement('li')
@@ -58,12 +59,14 @@ function searchTaskFunc() {
     for (const el of taskTextik) {
         if (addNewTask.value === el.value) {
             console.log(el.parentElement)
+            findMessage.style.opacity = 1;
             Array.from(taskList.children).forEach((childEl) => {
                 childEl.style.display = 'none'
             })
             el.parentElement.style.display = 'flex'
             el.focus()
             el.addEventListener('focusout', () => {
+                findMessage.style.opacity = 0;
                 Array.from(taskList.children).forEach((childEl) => {
                 childEl.style.display = 'flex'
                 })
