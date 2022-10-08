@@ -5,6 +5,7 @@ const taskText = [...document.getElementsByClassName('todo-text')]
 const addNewTask = document.getElementById('addTask')
 const searchTask = document.querySelector('#searchTask')
 const progress = document.getElementById('progress')
+const findMessage = document.getElementById('searchMessage')
 
 function createTask(desc) {
     const li = document.createElement('li')
@@ -55,14 +56,47 @@ function deleteTask(e) {
 }
 
 function searchTaskFunc() {
-    taskTextik.forEach((el) => {
+    for (const el of taskTextik) {
         if (addNewTask.value === el.value) {
-            el.scrollIntoView(true)
+            console.log(el.parentElement)
+            findMessage.style.opacity = 1;
+            Array.from(taskList.children).forEach((childEl) => {
+                childEl.style.display = 'none'
+            })
+            el.parentElement.style.display = 'flex'
             el.focus()
-        }
-    })
+            el.addEventListener('focusout', () => {
+                findMessage.style.opacity = 0;
+                Array.from(taskList.children).forEach((childEl) => {
+                childEl.style.display = 'flex'
+                })
+            })
+        } 
+        // else {
+        //     старий код
+        //     el.parentElement.style.display = 'none'
+        //     addNewTask.addEventListener('click', () => {
+        //         el.parentElement.style.display = 'flex'
+        //     })
+        // } 
+      }
 }
-// поточна версія
+
+function searchTimer() {
+    setTimeout(searchTaskFunc, 0);
+}
+
+function searchHighlight() {
+    for (const el of taskTextik) {
+        if (addNewTask.value === el.value) {
+            addNewTask.classList.add('red')
+            return
+        } else {
+            addNewTask.classList.remove('red')
+        }
+    }
+}
+
 const progressFunc = () => {
     let progElements = [...taskList.children];
     let taskCount = progElements.length;
@@ -94,6 +128,10 @@ const resetHighlight = (e) => {
 
 function initListeners() {
     addNewTask.addEventListener('keydown', createTaskListener)
+
+    addNewTask.addEventListener('change', searchTimer)
+
+    addNewTask.addEventListener('input', searchHighlight)
 
     searchTask.addEventListener('click', searchTaskFunc)
 }
