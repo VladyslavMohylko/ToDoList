@@ -1,37 +1,48 @@
 const taskList = document.querySelector('ul')
 const listElement = [...document.querySelectorAll('li')]
-const confirmTask = [...document.getElementsByClassName('check')]
+const confirmTasks = [...document.getElementsByClassName('check')]
 const taskText = [...document.getElementsByClassName('todo-text')]
 const addNewTask = document.getElementById('addTask')
 const searchTask = document.querySelector('#searchTask')
 const progress = document.getElementById('progress')
 const findMessage = document.getElementById('searchMessage')
 
-function createTask(desc) {
-    const li = document.createElement('li')
-    li.className = 'list-element'
-    const input = document.createElement('input')
-    input.type = 'text'
-    input.className = 'todo-text'
-    input.value = desc
+function deleteTaskButton() {
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.textContent = 'X';
+    deleteBtn.addEventListener('click', deleteTask);
+    return deleteBtn;
+}
+
+function confirmTask() {
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'check';
+    checkbox.addEventListener('click', progressFunc);
+    return checkbox;
+}
+
+function taskDescription(description) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'todo-text';
+    input.value = description;
     input.addEventListener('focus', (event) => {
-        console.log('kekw:')
         event.target.style.background = 'cyan';
     });
     input.addEventListener('blur', (event) => {
         event.target.style.background = '';
     });
-    const checkbox = document.createElement('input')
-    checkbox.type = 'checkbox'
-    checkbox.className = 'check'
-    checkbox.addEventListener('click', progressFunc)
-    const deleteBtn = document.createElement('button')
-    deleteBtn.className = 'delete-btn'
-    deleteBtn.textContent = 'X'
-    li.append(checkbox, input, deleteBtn)
-    deleteBtn.addEventListener('click', deleteTask)
+    return input;
+}
+
+function taskListItem(description) {
+    const li = document.createElement('li');
+    li.className = 'list-element';
+    li.append(confirmTask(), taskDescription(description), deleteTaskButton())
     li.addEventListener('mouseover', highlight)
-    return li
+    return li;
 }
 
 let taskTextik = []
@@ -42,7 +53,7 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
                 return;
             }
         }
-        taskList.appendChild(createTask(value))
+        taskList.appendChild(taskListItem(value))
         taskTextik = [...taskList.querySelectorAll('LI INPUT.todo-text')]
         console.log(taskTextik.value)
         progressFunc();
@@ -72,14 +83,7 @@ function searchTaskFunc() {
                 })
             })
         } 
-        // else {
-        //     старий код
-        //     el.parentElement.style.display = 'none'
-        //     addNewTask.addEventListener('click', () => {
-        //         el.parentElement.style.display = 'flex'
-        //     })
-        // } 
-      }
+    }
 }
 
 function searchTimer() {
