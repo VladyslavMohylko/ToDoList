@@ -15,11 +15,13 @@ function deleteTaskButton() {
     return deleteBtn;
 }
 
-function confirmTask() {
+function confirmTask(state = false) {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.className = 'check';
+    checkbox.checked = state;
     checkbox.addEventListener('click', progressFunc);
+    checkbox.addEventListener('click', checkBox);
     return checkbox;
 }
 
@@ -34,31 +36,78 @@ function taskDescription(description) {
     input.addEventListener('blur', (event) => {
         event.target.style.background = '';
     });
+
+    // let task = {};
+    // task.description = input.value;
+    // createdTasks.push(task);
+
     return input;
 }
 
-function taskListItem(description) {
+function taskListItem({complete, description} = {}) {
     const li = document.createElement('li');
     li.className = 'list-element';
-    li.append(confirmTask(), taskDescription(description), deleteTaskButton())
+    li.append(confirmTask(complete), taskDescription(description), deleteTaskButton())
     li.addEventListener('mouseover', highlight)
     return li;
 }
+/*
+task: {
+    complete: true/false,
+    description: 'dsadsadsa',
+    dateComplete: data,
+}
+*/
 
-let taskTextik = []
+let createdTasks = [];
+
 const createTaskListener = ({ key, target: { value } } = {}) => {
     if (key === 'Enter' && addNewTask.value !== '') {
-        for (const task of taskTextik) {
-            if (addNewTask.value === task.value) {
+        for (const task of createdTasks) {
+            if (addNewTask.value === task.description) {
                 return;
             }
         }
-        taskList.appendChild(taskListItem(value))
-        taskTextik = [...taskList.querySelectorAll('LI INPUT.todo-text')]
-        console.log(taskTextik.value)
+        const task = {
+            description: value,
+            complete: false,
+        };
+        createdTasks.push(task);
+
+        taskList.appendChild(taskListItem(task))
+        
+        console.log(createdTasks)
+
         progressFunc();
         addNewTask.value = '';
     }
+}
+
+
+function checkBox(e) {
+    if (e.currentTarget.checked) {
+        for (const el of createdTasks) {
+            if (el.description === e.currentTarget.nextSibling.value) {
+                el.complete = true;
+            }
+        }
+    } else {
+        for (const el of createdTasks) {
+            if (el.description === e.currentTarget.nextSibling.value) {
+                el.complete = false;
+            }
+        }
+    }
+    
+    /* 
+    1. знайти масив дом-лішок
+    2. вішаю івентлістенер 
+    3. через каренттаргет знаходжу велью
+    4. порівнюю велю із масивом 
+    5. тому елементу
+    */
+
+
 }
 
 function deleteTask(e) {
@@ -67,38 +116,52 @@ function deleteTask(e) {
 }
 
 function searchTaskFunc() {
-    for (const el of taskTextik) {
-        if (addNewTask.value === el.value) {
-            console.log(el.parentElement)
-            findMessage.style.opacity = 1;
-            Array.from(taskList.children).forEach((childEl) => {
-                childEl.style.display = 'none'
-            })
-            el.parentElement.style.display = 'flex'
-            el.focus()
-            el.addEventListener('focusout', () => {
-                findMessage.style.opacity = 0;
-                Array.from(taskList.children).forEach((childEl) => {
-                childEl.style.display = 'flex'
-                })
-            })
-        } 
-    }
+    localStorage.setItem('tasks', JSON.stringify(createdTasks));
+    let foundTask = createdTasks.filter(function(task) {
+        if (addNewTask.value === task.childNodes[1].value) {
+            return task;
+        }
+    });
+
+    taskList.append(foundTask[0]);
+
+
+    // for (let i of foundTask) {
+    //     taskList.innerHTML = i;
+    // }
+
+    // for (const el of taskTextik) {
+    //     if (addNewTask.value === el.value) {
+    //         console.log(el.parentElement)
+    //         findMessage.style.opacity = 1;
+    //         Array.from(taskList.children).forEach((childEl) => {
+    //             childEl.style.display = 'none'
+    //         })
+    //         el.parentElement.style.display = 'flex'
+    //         el.focus()
+    //         el.addEventListener('focusout', () => {
+    //             findMessage.style.opacity = 0;
+    //             Array.from(taskList.children).forEach((childEl) => {
+    //             childEl.style.display = 'flex'
+    //             })
+    //         })
+    //     } 
+    // }
 }
 
-function searchTimer() {
-    setTimeout(searchTaskFunc, 0);
-}
+// function searchTimer() {
+//     setTimeout(searchTaskFunc, 0);
+// }
 
 function searchHighlight() {
-    for (const el of taskTextik) {
-        if (addNewTask.value === el.value) {
-            addNewTask.classList.add('red')
-            return
-        } else {
-            addNewTask.classList.remove('red')
-        }
-    }
+    // for (const el of taskTextik) {
+    //     if (addNewTask.value === el.value) {
+    //         addNewTask.classList.add('red')
+    //         return
+    //     } else {
+    //         addNewTask.classList.remove('red')
+    //     }
+    // }
 }
 
 const progressFunc = () => {
@@ -111,6 +174,7 @@ const progressFunc = () => {
     progElements.forEach(el => {
         if (el.children[0].checked) {
             completeCount += 1;
+
         }
     });
     progress.textContent = `Progress: ${completeCount} / ${taskCount}`;
@@ -133,7 +197,7 @@ const resetHighlight = (e) => {
 function initListeners() {
     addNewTask.addEventListener('keydown', createTaskListener)
 
-    addNewTask.addEventListener('change', searchTimer)
+    // addNewTask.addEventListener('change', searchTimer)
 
     addNewTask.addEventListener('input', searchHighlight)
 
