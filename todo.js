@@ -107,6 +107,9 @@ function inputChange(e) {
 
 function deleteTask(e) {
     let tasks = [...taskList.children];
+    //якщо видалити знайдену таску, то зі створених видаляється перша --- баг
+    // можливо спрацює -> переробити на createdTasks.forEach ->
+    // -> e.currenttarget.child.value === task.description
     tasks.forEach((el, i) => {
         if (e.currentTarget.parentElement === el) {
             delete createdTasks[i];
@@ -118,53 +121,58 @@ function deleteTask(e) {
 }
 
 function searchTaskFunc() {
-    localStorage.setItem('tasks', JSON.stringify(createdTasks));
-    let foundTask = createdTasks.filter(function(task) {
-        if (addNewTask.value === task.childNodes[1].value) {
-            return task;
+    // localStorage.setItem('tasks', JSON.stringify(createdTasks));
+
+    let tasks = [...taskList.children];
+    let tasksFound = createdTasks.filter(el => {
+        if (el.description === addNewTask.value) {
+            return true;
         }
-    });
+    })
 
-    taskList.append(foundTask[0]);
+    console.log(tasksFound)
 
+    if (tasksFound.length !== createdTasks.length) {
+        for (const task of tasks) {
+            task.remove();
+        }
+        for (const task of tasksFound) {
+            if (tasksFound.length !== 0) {
+                taskList.appendChild(taskListItem(task));
+            }
+        }
+    }
+}
 
-    // for (let i of foundTask) {
-    //     taskList.innerHTML = i;
-    // }
-
-    // for (const el of taskTextik) {
-    //     if (addNewTask.value === el.value) {
-    //         console.log(el.parentElement)
-    //         findMessage.style.opacity = 1;
-    //         Array.from(taskList.children).forEach((childEl) => {
-    //             childEl.style.display = 'none'
-    //         })
-    //         el.parentElement.style.display = 'flex'
-    //         el.focus()
-    //         el.addEventListener('focusout', () => {
-    //             findMessage.style.opacity = 0;
-    //             Array.from(taskList.children).forEach((childEl) => {
-    //             childEl.style.display = 'flex'
-    //             })
-    //         })
-    //     } 
-    // }
+function tasksRebuilding() {
+    let tasks = [...taskList.children];
+    if (tasks.length !== 0) {
+        for (const task of tasks) {
+            task.remove();
+        }
+    }
+    if (createdTasks.length !== 0) {
+        for (const task of createdTasks) {
+            taskList.appendChild(taskListItem(task));
+            //погано, бо воно перемальовує
+        }
+    }   
 }
 
 // function searchTimer() {
 //     setTimeout(searchTaskFunc, 0);
 // }
 
-function searchHighlight() {
-    // for (const el of taskTextik) {
-    //     if (addNewTask.value === el.value) {
-    //         addNewTask.classList.add('red')
-    //         return
-    //     } else {
-    //         addNewTask.classList.remove('red')
-    //     }
-    // }
-}
+// function searchHighlight() {
+//     for (const el of taskTextik) {
+//         if (addNewTask.value === el.value) {
+//             addNewTask.classList.add('red')
+//             return
+//         } else {
+//             addNewTask.classList.remove('red')
+//         }
+//     }
+// }
 
 const progressFunc = () => {
     let progElements = [...taskList.children];
@@ -199,9 +207,11 @@ const resetHighlight = (e) => {
 function initListeners() {
     addNewTask.addEventListener('keydown', createTaskListener)
 
+    addNewTask.addEventListener('input', tasksRebuilding)
+
     // addNewTask.addEventListener('change', searchTimer)
 
-    addNewTask.addEventListener('input', searchHighlight)
+    // addNewTask.addEventListener('input', searchHighlight)
 
     searchTask.addEventListener('click', searchTaskFunc)
 }
