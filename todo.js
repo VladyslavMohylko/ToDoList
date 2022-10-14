@@ -30,17 +30,13 @@ function taskDescription(description) {
     input.type = 'text';
     input.className = 'todo-text';
     input.value = description;
+    input.addEventListener('change', inputChange);
     input.addEventListener('focus', (event) => {
         event.target.style.background = 'cyan';
     });
     input.addEventListener('blur', (event) => {
         event.target.style.background = '';
     });
-
-    // let task = {};
-    // task.description = input.value;
-    // createdTasks.push(task);
-
     return input;
 }
 
@@ -74,7 +70,7 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
         };
         createdTasks.push(task);
 
-        taskList.appendChild(taskListItem(task))
+        taskList.appendChild(taskListItem(task));
         
         console.log(createdTasks)
 
@@ -98,21 +94,27 @@ function checkBox(e) {
             }
         }
     }
-    
-    /* 
-    1. знайти масив дом-лішок
-    2. вішаю івентлістенер 
-    3. через каренттаргет знаходжу велью
-    4. порівнюю велю із масивом 
-    5. тому елементу
-    */
+}
 
-
+function inputChange(e) {
+    let tasks = [...taskList.children];
+    tasks.forEach((el, i) => {
+        if (e.currentTarget.parentElement === el) {
+            createdTasks[i].description = e.currentTarget.value;
+        }
+    }) 
 }
 
 function deleteTask(e) {
-    e.currentTarget.parentElement.remove()
-    progressFunc()
+    let tasks = [...taskList.children];
+    tasks.forEach((el, i) => {
+        if (e.currentTarget.parentElement === el) {
+            delete createdTasks[i];
+            createdTasks = createdTasks.filter(el => el !== undefined);
+        }
+    }) 
+    e.currentTarget.parentElement.remove();
+    progressFunc();
 }
 
 function searchTaskFunc() {
