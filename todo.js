@@ -1,7 +1,7 @@
-const taskList = document.querySelector('ul')
-const listElement = [...document.querySelectorAll('li')]
-const confirmTasks = [...document.getElementsByClassName('check')]
-const taskText = [...document.getElementsByClassName('todo-text')]
+const taskListDom = document.querySelector('ul')
+// const listElement = [...document.querySelectorAll('li')]
+// const confirmTasks = [...document.getElementsByClassName('check')]
+// const taskText = [...document.getElementsByClassName('todo-text')]
 const addNewTask = document.getElementById('addTask')
 const searchTask = document.querySelector('#searchTask')
 const progress = document.getElementById('progress')
@@ -70,7 +70,7 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
         };
         createdTasks.push(task);
 
-        taskList.appendChild(taskListItem(task));
+        taskListDom.appendChild(taskListItem(task));
         
         console.log(createdTasks)
 
@@ -82,38 +82,45 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
 
 function checkBox(e) {
     if (e.currentTarget.checked) {
-        for (const el of createdTasks) {
-            if (el.description === e.currentTarget.nextSibling.value) {
-                el.complete = true;
+        for (const task of createdTasks) {
+            if (task.description === e.currentTarget.nextSibling.value) {
+                task.complete = true;
             }
         }
     } else {
-        for (const el of createdTasks) {
-            if (el.description === e.currentTarget.nextSibling.value) {
-                el.complete = false;
+        for (const task of createdTasks) {
+            if (task.description === e.currentTarget.nextSibling.value) {
+                task.complete = false;
             }
         }
     }
+    // ось так
+    // for (const task of createdTasks) {
+    //     if (task.description === e.currentTarget.nextSibling.value) {
+    //         task.complete = e.currentTarget.checked;
+    //     }
+    // }
+
 }
 
 function inputChange(e) {
-    let tasks = [...taskList.children];
-    tasks.forEach((el, i) => {
-        if (e.currentTarget.parentElement === el) {
+    let tasksDom = [...taskListDom.children];
+    tasksDom.forEach((taskDom, i) => {
+        if (e.currentTarget.parentElement === taskDom) {
             createdTasks[i].description = e.currentTarget.value;
         }
     }) 
 }
 
 function deleteTask(e) {
-    let tasks = [...taskList.children];
+    let tasksDom = [...taskListDom.children];
     //якщо видалити знайдену таску, то зі створених видаляється перша --- баг
     // можливо спрацює -> переробити на createdTasks.forEach ->
     // -> e.currenttarget.child.value === task.description
-    tasks.forEach((el, i) => {
-        if (e.currentTarget.parentElement === el) {
+    tasksDom.forEach((taskDom, i) => {
+        if (e.currentTarget.parentElement === taskDom) {
             delete createdTasks[i];
-            createdTasks = createdTasks.filter(el => el !== undefined);
+            createdTasks = createdTasks.filter(task => task !== undefined);
         }
     }) 
     e.currentTarget.parentElement.remove();
@@ -123,9 +130,9 @@ function deleteTask(e) {
 function searchTaskFunc() {
     // localStorage.setItem('tasks', JSON.stringify(createdTasks));
 
-    let tasks = [...taskList.children];
-    let tasksFound = createdTasks.filter(el => {
-        if (el.description === addNewTask.value) {
+    let tasksDom = [...taskListDom.children];
+    let tasksFound = createdTasks.filter(task => {
+        if (task.description === addNewTask.value) {
             return true;
         }
     })
@@ -133,27 +140,29 @@ function searchTaskFunc() {
     console.log(tasksFound)
 
     if (tasksFound.length !== createdTasks.length) {
-        for (const task of tasks) {
-            task.remove();
+        for (const taskDom of tasksDom) {
+            // мув в окрему функцію
+            taskDom.remove();
         }
         for (const task of tasksFound) {
             if (tasksFound.length !== 0) {
-                taskList.appendChild(taskListItem(task));
+                taskListDom.appendChild(taskListItem(task));
             }
         }
     }
 }
 
 function tasksRebuilding() {
-    let tasks = [...taskList.children];
-    if (tasks.length !== 0) {
-        for (const task of tasks) {
-            task.remove();
+    let tasksDom = [...taskListDom.children];
+    if (tasksDom.length !== 0) {
+        for (const taskDom of tasksDom) {
+            taskDom.remove();
         }
     }
     if (createdTasks.length !== 0) {
         for (const task of createdTasks) {
-            taskList.appendChild(taskListItem(task));
+            taskListDom.appendChild(taskListItem(task));
+            // переробити в окремі функції а масив передавати в параметри
             //погано, бо воно перемальовує
         }
     }   
@@ -175,13 +184,13 @@ function tasksRebuilding() {
 // }
 
 const progressFunc = () => {
-    let progElements = [...taskList.children];
-    let taskCount = progElements.length;
-    if (progElements.length == 0) {
+    let progElementsDom = [...taskListDom.children];
+    let taskCount = progElementsDom.length;
+    if (progElementsDom.length == 0) {
         taskCount = 0;
     }
     let completeCount = 0;
-    progElements.forEach(el => {
+    progElementsDom.forEach(el => {
         if (el.children[0].checked) {
             completeCount += 1;
 

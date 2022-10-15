@@ -10,3 +10,4 @@
 10. add date completed
 11. sorting>>>>>future
 12. forEach -> filter 
+13. const instead of let
