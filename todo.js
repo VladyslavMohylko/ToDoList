@@ -47,13 +47,6 @@ function taskListItem({complete, description} = {}) {
     li.addEventListener('mouseover', highlight)
     return li;
 }
-/*
-task: {
-    complete: true/false,
-    description: 'dsadsadsa',
-    dateComplete: data,
-}
-*/
 
 let createdTasks = [];
 
@@ -117,12 +110,21 @@ function deleteTask(e) {
     //якщо видалити знайдену таску, то зі створених видаляється перша --- баг
     // можливо спрацює -> переробити на createdTasks.forEach ->
     // -> e.currenttarget.child.value === task.description
-    tasksDom.forEach((taskDom, i) => {
-        if (e.currentTarget.parentElement === taskDom) {
-            delete createdTasks[i];
-            createdTasks = createdTasks.filter(task => task !== undefined);
-        }
-    }) 
+    // tasksDom.forEach((taskDom, i) => {
+    //     if (e.currentTarget.parentElement === taskDom) {
+    //         delete createdTasks[i];
+    //         createdTasks = createdTasks.filter(task => task !== undefined);
+    //     }
+    // }) 
+    createdTasks = createdTasks.filter(task => e.currentTarget.previousElementSibling.value !== task.description && task !== undefined);
+    // createdTasks.forEach((task) => {
+    //     console.dir(e.currentTarget.previousElementSibling.value)
+    //     if (e.currentTarget.previousElementSibling.value === task.description) {
+    //         console.log(task)
+    //         delete task;
+    //         createdTasks = createdTasks.filter(task => task !== undefined);
+    //     }
+    // }) 
     e.currentTarget.parentElement.remove();
     progressFunc();
 }
