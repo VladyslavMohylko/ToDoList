@@ -1,13 +1,10 @@
-const taskListDom = document.querySelector('ul')
-// const listElement = [...document.querySelectorAll('li')]
-// const confirmTasks = [...document.getElementsByClassName('check')]
-// const taskText = [...document.getElementsByClassName('todo-text')]
-const addNewTask = document.getElementById('addTask')
-const searchTask = document.querySelector('#searchTask')
-const progress = document.getElementById('progress')
-const findMessage = document.getElementById('searchMessage')
+const taskListDom = document.querySelector('ul');
+const addNewTask = document.getElementById('addTask');
+const searchTask = document.querySelector('#searchTask');
+const progress = document.getElementById('progress');
+const findMessage = document.getElementById('searchMessage');
 
-function deleteTaskButton() {
+function deleteTaskButtonDom() {
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'delete-btn';
     deleteBtn.textContent = 'X';
@@ -15,22 +12,21 @@ function deleteTaskButton() {
     return deleteBtn;
 }
 
-function confirmTask(state = false) {
+function confirmTaskDom(state = false) {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.className = 'check';
     checkbox.checked = state;
-    checkbox.addEventListener('click', progressFunc);
-    checkbox.addEventListener('click', checkBox);
+    checkbox.addEventListener('click', taskStatus);
     return checkbox;
 }
 
-function taskDescription(description) {
+function taskDescriptionDom(description) {
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'todo-text';
     input.value = description;
-    input.addEventListener('change', inputChange);
+    input.addEventListener('change', descriptionChange);
     input.addEventListener('focus', (event) => {
         event.target.style.background = 'cyan';
     });
@@ -40,10 +36,10 @@ function taskDescription(description) {
     return input;
 }
 
-function taskListItem({complete, description} = {}) {
+function taskListItemDom({complete, description} = {}) {
     const li = document.createElement('li');
     li.className = 'list-element';
-    li.append(confirmTask(complete), taskDescription(description), deleteTaskButton())
+    li.append(confirmTaskDom(complete), taskDescriptionDom(description), deleteTaskButtonDom())
     li.addEventListener('mouseover', highlight)
     return li;
 }
@@ -57,176 +53,139 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
                 return;
             }
         }
+
         const task = {
             description: value,
             complete: false,
         };
+
         createdTasks.push(task);
-
-        taskListDom.appendChild(taskListItem(task));
-        
-        console.log(createdTasks)
-
+        taskListDom.appendChild(taskListItemDom(task));
         progressFunc();
         addNewTask.value = '';
     }
 }
 
 
-function checkBox(e) {
-    if (e.currentTarget.checked) {
-        for (const task of createdTasks) {
-            if (task.description === e.currentTarget.nextSibling.value) {
-                task.complete = true;
-            }
-        }
-    } else {
-        for (const task of createdTasks) {
-            if (task.description === e.currentTarget.nextSibling.value) {
-                task.complete = false;
-            }
+function taskStatus(e) {
+    for (const task of createdTasks) {
+        if (task.description === e.currentTarget.nextSibling.value) {
+            task.complete = e.currentTarget.checked;
         }
     }
-    // ось так
-    // for (const task of createdTasks) {
-    //     if (task.description === e.currentTarget.nextSibling.value) {
-    //         task.complete = e.currentTarget.checked;
-    //     }
-    // }
-
+    progressFunc();
 }
 
-function inputChange(e) {
-    let tasksDom = [...taskListDom.children];
+function descriptionChange(e) {
+    const tasksDom = [...taskListDom.children];
     tasksDom.forEach((taskDom, i) => {
         if (e.currentTarget.parentElement === taskDom) {
-            createdTasks[i].description = e.currentTarget.value;
+            if (tasksDom.length === createdTasks.length) {
+                createdTasks[i].description = e.currentTarget.value;
+            }
         }
     }) 
 }
 
 function deleteTask(e) {
-    let tasksDom = [...taskListDom.children];
-    //якщо видалити знайдену таску, то зі створених видаляється перша --- баг
-    // можливо спрацює -> переробити на createdTasks.forEach ->
-    // -> e.currenttarget.child.value === task.description
-    // tasksDom.forEach((taskDom, i) => {
-    //     if (e.currentTarget.parentElement === taskDom) {
-    //         delete createdTasks[i];
-    //         createdTasks = createdTasks.filter(task => task !== undefined);
-    //     }
-    // }) 
     createdTasks = createdTasks.filter(task => e.currentTarget.previousElementSibling.value !== task.description && task !== undefined);
-    // createdTasks.forEach((task) => {
-    //     console.dir(e.currentTarget.previousElementSibling.value)
-    //     if (e.currentTarget.previousElementSibling.value === task.description) {
-    //         console.log(task)
-    //         delete task;
-    //         createdTasks = createdTasks.filter(task => task !== undefined);
-    //     }
-    // }) 
     e.currentTarget.parentElement.remove();
     progressFunc();
 }
 
+function domTasksRebuild(tasks) {
+    for (const task of tasks) {
+        taskListDom.appendChild(taskListItemDom(task));
+    }
+}
+
+function domTasksRemove(tasks) {
+    for (const taskDom of tasks) {
+        taskDom.remove();
+    }
+}
+
 function searchTaskFunc() {
-    // localStorage.setItem('tasks', JSON.stringify(createdTasks));
-
-    let tasksDom = [...taskListDom.children];
-    let tasksFound = createdTasks.filter(task => {
-        if (task.description === addNewTask.value) {
-            return true;
-        }
-    })
-
-    console.log(tasksFound)
-
+    const tasksDom = [...taskListDom.children];
+    const tasksFound = createdTasks.filter(task => task.description === addNewTask.value);
     if (tasksFound.length !== createdTasks.length) {
-        for (const taskDom of tasksDom) {
-            // мув в окрему функцію
-            taskDom.remove();
+        if (tasksFound.length !== 0) {
+            domTasksRemove(tasksDom);
+            domTasksRebuild(tasksFound);
         }
-        for (const task of tasksFound) {
-            if (tasksFound.length !== 0) {
-                taskListDom.appendChild(taskListItem(task));
-            }
+    }
+}
+
+function searchRedAlert() {
+    for (const task of createdTasks) {
+        if (addNewTask.value === task.description) {
+            addNewTask.classList.add('red');
+            return;
+        } else {
+            addNewTask.classList.remove('red');
         }
     }
 }
 
 function tasksRebuilding() {
-    let tasksDom = [...taskListDom.children];
-    if (tasksDom.length !== 0) {
-        for (const taskDom of tasksDom) {
-            taskDom.remove();
-        }
-    }
-    if (createdTasks.length !== 0) {
-        for (const task of createdTasks) {
-            taskListDom.appendChild(taskListItem(task));
-            // переробити в окремі функції а масив передавати в параметри
-            //погано, бо воно перемальовує
-        }
-    }   
+    const tasksDom = [...taskListDom.children];
+        domTasksRemove(tasksDom);
+        domTasksRebuild(createdTasks);
 }
 
-// function searchTimer() {
-//     setTimeout(searchTaskFunc, 0);
-// }
+function searchTimer() {
+    setTimeout(searchTaskFunc, 0);
+}
 
-// function searchHighlight() {
-//     for (const el of taskTextik) {
-//         if (addNewTask.value === el.value) {
-//             addNewTask.classList.add('red')
-//             return
-//         } else {
-//             addNewTask.classList.remove('red')
-//         }
-//     }
-// }
+function searchAlertAndRebuilding() {
+    const tasksDom = [...taskListDom.children];
+    searchRedAlert();
+    if (tasksDom.length !== createdTasks.length) {
+        tasksRebuilding();
+    }
+    if (tasksDom.length === createdTasks.length) {
+        if (addNewTask.value !== '') {
+            searchTimer();
+        }
+    }
+}
 
 const progressFunc = () => {
-    let progElementsDom = [...taskListDom.children];
-    let taskCount = progElementsDom.length;
-    if (progElementsDom.length == 0) {
+    let taskCount = createdTasks.length;
+    if (createdTasks.length == 0) {
         taskCount = 0;
     }
     let completeCount = 0;
-    progElementsDom.forEach(el => {
-        if (el.children[0].checked) {
+    createdTasks.forEach(task => {
+        if (task.complete === true) {
             completeCount += 1;
-
         }
     });
     progress.textContent = `Progress: ${completeCount} / ${taskCount}`;
 }
 
 const highlight = (e) => {
-    const target = e.currentTarget
-    target.classList.add('highlight')
-    target.removeEventListener('mouseover', highlight)
-    target.addEventListener('mouseout', resetHighlight)
+    const target = e.currentTarget;
+    target.classList.add('highlight');
+    target.removeEventListener('mouseover', highlight);
+    target.addEventListener('mouseout', resetHighlight);
 }
 
 const resetHighlight = (e) => {
-    const target = e.currentTarget
-    target.classList.remove('highlight')
-    target.removeEventListener('mouseout', resetHighlight)
-    target.addEventListener('mouseover', highlight)
+    const target = e.currentTarget;
+    target.classList.remove('highlight');
+    target.removeEventListener('mouseout', resetHighlight);
+    target.addEventListener('mouseover', highlight);
 }
 
 function initListeners() {
-    addNewTask.addEventListener('keydown', createTaskListener)
+    addNewTask.addEventListener('keydown', createTaskListener);
 
-    addNewTask.addEventListener('input', tasksRebuilding)
+    addNewTask.addEventListener('input', searchAlertAndRebuilding);
 
-    // addNewTask.addEventListener('change', searchTimer)
-
-    // addNewTask.addEventListener('input', searchHighlight)
-
-    searchTask.addEventListener('click', searchTaskFunc)
+    searchTask.addEventListener('click', searchTaskFunc);
 }
 
-initListeners()
+initListeners();
 
 
