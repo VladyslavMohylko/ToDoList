@@ -71,7 +71,7 @@ button {
     background-color: lightblue;
     font-size: 16px;
     margin-left: 90px;
-    opacity: 0;
+    visibility: hidden;
 }
 #list {
     display: flex;
@@ -84,7 +84,7 @@ button {
     display: flex;
     height: 70px;
     margin: 10px;
-    min-width: 400px;
+    min-width: 800px;
     flex-direction: row;
     padding: 8px 2px;
     align-items: center;

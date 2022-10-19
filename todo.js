@@ -61,6 +61,8 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
 
         createdTasks.push(task);
         taskListDom.appendChild(taskListItemDom(task));
+        localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
+        // let saveTasks = localStorage.setItem
         progressFunc();
         addNewTask.value = '';
     }
@@ -71,6 +73,7 @@ function taskStatus(e) {
     for (const task of createdTasks) {
         if (task.description === e.currentTarget.nextSibling.value) {
             task.complete = e.currentTarget.checked;
+            localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
         }
     }
     progressFunc();
@@ -82,6 +85,7 @@ function descriptionChange(e) {
         if (e.currentTarget.parentElement === taskDom) {
             if (tasksDom.length === createdTasks.length) {
                 createdTasks[i].description = e.currentTarget.value;
+                localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
             }
         }
     }) 
@@ -89,6 +93,7 @@ function descriptionChange(e) {
 
 function deleteTask(e) {
     createdTasks = createdTasks.filter(task => e.currentTarget.previousElementSibling.value !== task.description && task !== undefined);
+    localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
     e.currentTarget.parentElement.remove();
     progressFunc();
 }
@@ -108,8 +113,9 @@ function domTasksRemove(tasks) {
 function searchTaskFunc() {
     const tasksDom = [...taskListDom.children];
     const tasksFound = createdTasks.filter(task => task.description === addNewTask.value);
-    if (tasksFound.length !== createdTasks.length) {
+    if (tasksFound.length !== createdTasks.length || tasksFound.length === 1) {
         if (tasksFound.length !== 0) {
+            findMessage.style.visibility = 'visible';
             domTasksRemove(tasksDom);
             domTasksRebuild(tasksFound);
         }
@@ -140,13 +146,16 @@ function searchTimer() {
 function searchAlertAndRebuilding() {
     const tasksDom = [...taskListDom.children];
     searchRedAlert();
-    if (tasksDom.length !== createdTasks.length) {
-        tasksRebuilding();
-    }
-    if (tasksDom.length === createdTasks.length) {
-        if (addNewTask.value !== '') {
-            searchTimer();
+    if (tasksDom.length !== createdTasks.length || createdTasks.length === 1) {
+        for (const task of createdTasks) {
+            if (task.description !== addNewTask.value) {
+                findMessage.style.visibility = 'hidden';
+                tasksRebuilding();
+            }
         }
+    }
+    if (addNewTask.value !== '') {
+        searchTimer();
     }
 }
 
@@ -187,5 +196,17 @@ function initListeners() {
 }
 
 initListeners();
+
+window.addEventListener('load', () => {
+    const getTasks = JSON.parse(localStorage.getItem('saveTasks'));
+    console.log(getTasks);
+
+    for (const task of getTasks) {
+        createdTasks.push(task);
+        taskListDom.appendChild(taskListItemDom(task));
+    }
+
+    progressFunc();
+})
 
 
