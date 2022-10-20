@@ -62,7 +62,6 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
         createdTasks.push(task);
         taskListDom.appendChild(taskListItemDom(task));
         localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
-        // let saveTasks = localStorage.setItem
         progressFunc();
         addNewTask.value = '';
     }
@@ -93,6 +92,8 @@ function descriptionChange(e) {
 
 function deleteTask(e) {
     createdTasks = createdTasks.filter(task => e.currentTarget.previousElementSibling.value !== task.description && task !== undefined);
+    console.log(e.currentTarget)
+    console.dir(e.currentTarget)
     localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
     e.currentTarget.parentElement.remove();
     progressFunc();
@@ -201,12 +202,19 @@ window.addEventListener('load', () => {
     const getTasks = JSON.parse(localStorage.getItem('saveTasks'));
     console.log(getTasks);
 
-    for (const task of getTasks) {
-        createdTasks.push(task);
-        taskListDom.appendChild(taskListItemDom(task));
+    if (getTasks !== null) {
+        for (const task of getTasks) {
+            createdTasks.push(task);
+            taskListDom.appendChild(taskListItemDom(task));
+        }
+    
+        progressFunc();
     }
-
-    progressFunc();
 })
 
+
+//дата 
+// const a = new Date():
+// let year = `${d.getFullYear()} + ${d.getMonth()+1} + ${d.getDate()} ${d.getHours()} + ${d.getMinutes()}`;
+// console.log(year)
 
