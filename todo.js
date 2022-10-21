@@ -85,9 +85,22 @@ function descriptionChange(e) {
             if (tasksDom.length === createdTasks.length) {
                 createdTasks[i].description = e.currentTarget.value;
                 localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
+            } else {
+                const tasksFoundMap = createdTasks.map(task => {
+                    if (task.description === addNewTask.value) {
+                        return task;
+                    }
+                });
+                tasksFoundMap.forEach((task, index) => {
+                    if (task !== undefined) { 
+                        createdTasks[index].description = e.currentTarget.value;
+                        searchRedAlert();
+                        localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
+                    }
+                });
             }
         }
-    }) 
+    });
 }
 
 function deleteTask(e) {
