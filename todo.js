@@ -12,6 +12,15 @@ function deleteTaskButtonDom() {
     return deleteBtn;
 }
 
+function completeTaskDateDom(date) {
+    const completeDate = document.createElement('div');
+    completeDate.style.width = '80%';
+    completeDate.textContent = date;
+    completeDate.style.position = 'absolute';
+    completeDate.style.top = '5%';
+    return completeDate;
+}
+
 function confirmTaskDom(state = false) {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -36,10 +45,10 @@ function taskDescriptionDom(description) {
     return input;
 }
 
-function taskListItemDom({complete, description} = {}) {
+function taskListItemDom({complete, description, date} = {}) {
     const li = document.createElement('li');
     li.className = 'list-element';
-    li.append(confirmTaskDom(complete), taskDescriptionDom(description), deleteTaskButtonDom())
+    li.append(completeTaskDateDom(date),confirmTaskDom(complete), taskDescriptionDom(description), deleteTaskButtonDom())
     li.addEventListener('mouseover', highlight)
     return li;
 }
@@ -57,6 +66,7 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
         const task = {
             description: value,
             complete: false,
+            date: 'COMPLETED DATE: NOT READY YET',
         };
 
         createdTasks.push(task);
@@ -72,10 +82,30 @@ function taskStatus(e) {
     for (const task of createdTasks) {
         if (task.description === e.currentTarget.nextSibling.value) {
             task.complete = e.currentTarget.checked;
+            if (task.complete === true) {
+                task.date = completedDateGenerator();
+                e.currentTarget.parentElement.children[0].textContent = task.date;
+            } else {
+                task.date = 'COMPLETED DATE: NOT READY YET';
+                e.currentTarget.parentElement.children[0].textContent = task.date;
+            }
             localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
         }
     }
     progressFunc();
+}
+
+function completedDateGenerator() {
+    const dateComplete = new Date();
+    let normalMinutes = 0;
+    if (dateComplete.getMinutes() < 10) {
+        normalMinutes = '0' + dateComplete.getMinutes();
+    } else {
+        normalMinutes = dateComplete.getMinutes();
+    }
+    const dateLog = `COMPLETED DATE: ${dateComplete.getHours()}:${normalMinutes}
+    ---${dateComplete.getDate()}/${dateComplete.getMonth()+1}/${dateComplete.getFullYear()}`;
+    return dateLog;
 }
 
 function descriptionChange(e) {
@@ -85,15 +115,13 @@ function descriptionChange(e) {
             if (tasksDom.length === createdTasks.length) {
                 createdTasks[i].description = e.currentTarget.value;
                 localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
-            }
+            } 
         }
-    }) 
+    }); 
 }
 
 function deleteTask(e) {
     createdTasks = createdTasks.filter(task => e.currentTarget.previousElementSibling.value !== task.description && task !== undefined);
-    console.log(e.currentTarget)
-    console.dir(e.currentTarget)
     localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
     e.currentTarget.parentElement.remove();
     progressFunc();
@@ -200,8 +228,6 @@ initListeners();
 
 window.addEventListener('load', () => {
     const getTasks = JSON.parse(localStorage.getItem('saveTasks'));
-    console.log(getTasks);
-
     if (getTasks !== null) {
         for (const task of getTasks) {
             createdTasks.push(task);

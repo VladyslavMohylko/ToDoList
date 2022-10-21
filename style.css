@@ -81,16 +81,19 @@ button {
     justify-content: space-around;
 }
 .list-element {
+    position: relative;
     display: flex;
+    background-color: antiquewhite;
     height: 70px;
     margin: 10px;
     min-width: 800px;
     flex-direction: row;
-    padding: 8px 2px;
+    padding: 45px 2px 40px;
     align-items: center;
     justify-content: space-around;
     border-radius: 15px;
 }
+
 .todo-text, #addTask {
     width: 75%;
     border-radius: 4px;
