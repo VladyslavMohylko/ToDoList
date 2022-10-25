@@ -66,11 +66,23 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
         createdTasks.push(task);
         taskListDom.appendChild(taskListItemDom(task));
         saveToStorage('saveTasks', createdTasks);
-        progressFunc();
         addNewTask.value = '';
+        createAfterMatch();
+        progressFunc();
     }
 }
 
+function createAfterMatch() {
+    const tasksDom = [...taskListDom.children];
+    findMessage.style.visibility = 'hidden';
+    searchYellowAlert();
+    searchRedAlert();
+    if (createdTasks.length !== tasksDom.length) {
+        domTasksRemove(tasksDom);
+        domTasksRebuild(createdTasks);
+        // findMessage.style.visibility = 'hidden';
+    }
+}
 
 function taskStatus(e) {
     for (const task of createdTasks) {
@@ -115,24 +127,35 @@ function domTasksRemove(tasks) {
 
 function searchTaskFunc() {
     const tasksDom = [...taskListDom.children];
-    const tasksFound = createdTasks.filter(task => task.description === addNewTask.value);
-    if (tasksFound.length !== createdTasks.length || tasksFound.length === 1) {
+    const tasksFound = createdTasks.filter(task => task.description.match(addNewTask.value));
+    console.log(tasksFound);
+    // нова умова match +(&& або ||) task.desk === addNewTask.value
+    
         if (tasksFound.length !== 0) {
             findMessage.style.visibility = 'visible';
             domTasksRemove(tasksDom);
             domTasksRebuild(tasksFound);
         }
-    }
+    
 }
 
 function searchRedAlert() {
+    addNewTask.classList.remove('red');
     for (const task of createdTasks) {
         if (addNewTask.value === task.description) {
             addNewTask.classList.add('red');
             return;
-        } else {
-            addNewTask.classList.remove('red');
-        }
+        } 
+    }
+}
+
+function searchYellowAlert() {
+    addNewTask.classList.remove('yellow');
+    for (const task of createdTasks) {
+        if (task.description.match(addNewTask.value) && addNewTask.value !== '') {
+            addNewTask.classList.add('yellow');
+            return;
+        } 
     }
 }
 
@@ -148,15 +171,16 @@ function searchTimer() {
 
 function searchAlertAndRebuilding() {
     const tasksDom = [...taskListDom.children];
+    searchYellowAlert();
     searchRedAlert();
-    if (tasksDom.length !== createdTasks.length || createdTasks.length === 1) {
+    
         for (const task of createdTasks) {
             if (task.description !== addNewTask.value) {
                 findMessage.style.visibility = 'hidden';
                 tasksRebuilding();
             }
         }
-    }
+    
     if (addNewTask.value !== '') {
         searchTimer();
     }
