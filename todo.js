@@ -128,15 +128,15 @@ function domTasksRemove(tasks) {
 function searchTaskFunc() {
     const tasksDom = [...taskListDom.children];
     const tasksFound = createdTasks.filter(task => task.description.match(addNewTask.value));
-    console.log(tasksFound);
-    // нова умова match +(&& або ||) task.desk === addNewTask.value
-    
-        if (tasksFound.length !== 0) {
-            findMessage.style.visibility = 'visible';
-            domTasksRemove(tasksDom);
-            domTasksRebuild(tasksFound);
-        }
-    
+    if (tasksFound.length !== 0) {
+        findMessage.style.visibility = 'visible';
+        domTasksRemove(tasksDom);
+        domTasksRebuild(tasksFound);
+    }
+    if (tasksFound.length === 0 || addNewTask.value === '') {
+        findMessage.style.visibility = 'hidden';
+        tasksRebuildingAfterSearching();
+    }
 }
 
 function searchRedAlert() {
@@ -159,7 +159,7 @@ function searchYellowAlert() {
     }
 }
 
-function tasksRebuilding() {
+function tasksRebuildingAfterSearching() {
     const tasksDom = [...taskListDom.children];
         domTasksRemove(tasksDom);
         domTasksRebuild(createdTasks);
@@ -170,20 +170,11 @@ function searchTimer() {
 }
 
 function searchAlertAndRebuilding() {
-    const tasksDom = [...taskListDom.children];
     searchYellowAlert();
+
     searchRedAlert();
     
-        for (const task of createdTasks) {
-            if (task.description !== addNewTask.value) {
-                findMessage.style.visibility = 'hidden';
-                tasksRebuilding();
-            }
-        }
-    
-    if (addNewTask.value !== '') {
-        searchTimer();
-    }
+    searchTimer();
 }
 
 const progressFunc = () => {
