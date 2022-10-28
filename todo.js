@@ -15,7 +15,7 @@ function deleteTaskButtonDom() {
 function completeTaskDateDom(date) {
     const completeDate = document.createElement('div');
     completeDate.style.width = '80%';
-    completeDate.textContent = date;
+    completeDate.textContent = `COMPLETED DATE: ${date}`;
     completeDate.style.position = 'absolute';
     completeDate.style.top = '5%';
     return completeDate;
@@ -66,7 +66,7 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
         const task = {
             description: value,
             complete: false,
-            date: 'COMPLETED DATE: NOT READY YET',
+            date: 'NOT READY YET',
         };
 
         createdTasks.push(task);
@@ -82,13 +82,14 @@ function taskStatus(e) {
     for (const task of createdTasks) {
         if (task.description === e.currentTarget.nextSibling.value) {
             task.complete = e.currentTarget.checked;
-            if (task.complete === true) {
+            if (task.complete) {
                 task.date = completedDateGenerator();
-                e.currentTarget.parentElement.children[0].textContent = task.date;
             } else {
-                task.date = 'COMPLETED DATE: NOT READY YET';
-                e.currentTarget.parentElement.children[0].textContent = task.date;
+                task.date = 'NOT READY YET';
             }
+            e.currentTarget.parentElement.children[0].textContent = `COMPLETED DATE: ${task.date}`;
+            // e.currentTarget.parentElement.children[0].textContent = task.date;
+            
             localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
         }
     }
@@ -97,15 +98,7 @@ function taskStatus(e) {
 
 function completedDateGenerator() {
     const dateComplete = new Date();
-    let normalMinutes = 0;
-    if (dateComplete.getMinutes() < 10) {
-        normalMinutes = '0' + dateComplete.getMinutes();
-    } else {
-        normalMinutes = dateComplete.getMinutes();
-    }
-    const dateLog = `COMPLETED DATE: ${dateComplete.getHours()}:${normalMinutes}
-    ---${dateComplete.getDate()}/${dateComplete.getMonth()+1}/${dateComplete.getFullYear()}`;
-    return dateLog;
+    return dateComplete.toLocaleString('en-GB', { timeZone: 'Europe/Kyiv' });
 }
 
 function descriptionChange(e) {
