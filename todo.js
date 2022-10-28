@@ -80,7 +80,6 @@ function createAfterMatch() {
     if (createdTasks.length !== tasksDom.length) {
         domTasksRemove(tasksDom);
         domTasksRebuild(createdTasks);
-        // findMessage.style.visibility = 'hidden';
     }
 }
 
