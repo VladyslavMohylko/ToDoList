@@ -125,8 +125,10 @@ button {
     background-color: red;
     opacity: 0.5;
 }
-.night-mode {
-    color: black;
-    background: grey;
+.dateBlock {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 7px;
 }
 

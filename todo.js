@@ -13,12 +13,17 @@ function deleteTaskButtonDom() {
 }
 
 function completeTaskDateDom(date) {
-    const completeDate = document.createElement('div');
-    completeDate.style.width = '80%';
-    completeDate.textContent = `COMPLETED DATE: ${date}`;
-    completeDate.style.position = 'absolute';
-    completeDate.style.top = '5%';
-    return completeDate;
+    const completeDateBlock = document.createElement('div');
+    const dateTitle = document.createElement('div');
+    const dateField = document.createElement('div');
+    dateTitle.textContent = 'COMPLETED DATE: ';
+    dateField.textContent = date;
+    completeDateBlock.style.width = '80%';
+    completeDateBlock.style.position = 'absolute';
+    completeDateBlock.style.top = '5%';
+    completeDateBlock.classList.add('dateBlock');
+    completeDateBlock.append(dateTitle, dateField);
+    return completeDateBlock;
 }
 
 function confirmTaskDom(state = false) {
@@ -82,14 +87,8 @@ function taskStatus(e) {
     for (const task of createdTasks) {
         if (task.description === e.currentTarget.nextSibling.value) {
             task.complete = e.currentTarget.checked;
-            if (task.complete) {
-                task.date = completedDateGenerator();
-            } else {
-                task.date = 'NOT READY YET';
-            }
-            e.currentTarget.parentElement.children[0].textContent = `COMPLETED DATE: ${task.date}`;
-            // e.currentTarget.parentElement.children[0].textContent = task.date;
-            
+            task.date = task.complete ? completedDateGenerator() : 'NOT READY YET';
+            e.currentTarget.parentElement.children[0].children[1].textContent = task.date;            
             localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
         }
     }
@@ -231,9 +230,4 @@ window.addEventListener('load', () => {
     }
 })
 
-
-//дата 
-// const a = new Date():
-// let year = `${d.getFullYear()} + ${d.getMonth()+1} + ${d.getDate()} ${d.getHours()} + ${d.getMinutes()}`;
-// console.log(year)
 
