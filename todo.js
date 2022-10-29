@@ -95,14 +95,33 @@ function taskStatus(e) {
 
 function descriptionChange(e) {
     const tasksDom = [...taskListDom.children];
-    tasksDom.forEach((taskDom, i) => {
-        if (e.currentTarget.parentElement === taskDom) {
-            if (tasksDom.length === createdTasks.length) {
+    if (tasksDom.length === createdTasks.length) {
+        tasksDom.forEach((taskDom, i) => {
+            if (e.currentTarget.parentElement === taskDom) {
                 createdTasks[i].description = e.currentTarget.value;
                 saveToStorage('saveTasks', createdTasks);
+                return;
             }
-        }
-    });
+        });
+    } else {
+        const tasksFoundFilter = createdTasks.filter(task => {
+            if (task.description.match(addNewTask.value)) {
+                return true;
+            }
+        });
+
+        tasksDom.forEach((taskDom, index) => {
+            if (e.currentTarget.parentElement === taskDom) {
+                for (const task of createdTasks) {
+                    if (tasksFoundFilter[index].description === task.description) {
+                        task.description = e.currentTarget.value;
+                        saveToStorage('saveTasks', createdTasks);
+                        return;
+                    }
+                }
+            }
+        });
+    }
 }
 
 function deleteTask(e) {
@@ -222,11 +241,7 @@ window.addEventListener('load', () => {
             createdTasks.push(task);
             taskListDom.appendChild(taskListItemDom(task));
         }
-    
-        progressFunc();
     }
-})
-
-
-
+    progressFunc();
+});
 
