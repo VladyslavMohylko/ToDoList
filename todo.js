@@ -12,6 +12,20 @@ function deleteTaskButtonDom() {
     return deleteBtn;
 }
 
+function completeTaskDateDom(date) {
+    const completeDateBlock = document.createElement('div');
+    const dateTitle = document.createElement('div');
+    const dateField = document.createElement('div');
+    dateTitle.textContent = 'COMPLETED DATE: ';
+    dateField.textContent = date;
+    completeDateBlock.style.width = '80%';
+    completeDateBlock.style.position = 'absolute';
+    completeDateBlock.style.top = '5%';
+    completeDateBlock.classList.add('dateBlock');
+    completeDateBlock.append(dateTitle, dateField);
+    return completeDateBlock;
+}
+
 function confirmTaskDom(state = false) {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -36,10 +50,10 @@ function taskDescriptionDom(description) {
     return input;
 }
 
-function taskListItemDom({complete, description} = {}) {
+function taskListItemDom({complete, description, date} = {}) {
     const li = document.createElement('li');
     li.className = 'list-element';
-    li.append(confirmTaskDom(complete), taskDescriptionDom(description), deleteTaskButtonDom())
+    li.append(completeTaskDateDom(date),confirmTaskDom(complete), taskDescriptionDom(description), deleteTaskButtonDom())
     li.addEventListener('mouseover', highlight)
     return li;
 }
@@ -57,6 +71,7 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
         const task = {
             description: value,
             complete: false,
+            date: 'NOT READY YET',
         };
 
         createdTasks.push(task);
@@ -72,10 +87,17 @@ function taskStatus(e) {
     for (const task of createdTasks) {
         if (task.description === e.currentTarget.nextSibling.value) {
             task.complete = e.currentTarget.checked;
+            task.date = task.complete ? completedDateGenerator() : 'NOT READY YET';
+            e.currentTarget.parentElement.children[0].children[1].textContent = task.date;            
             localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
         }
     }
     progressFunc();
+}
+
+function completedDateGenerator() {
+    const dateComplete = new Date();
+    return dateComplete.toLocaleString('en-GB', { timeZone: 'Europe/Kyiv' });
 }
 
 function descriptionChange(e) {
@@ -85,15 +107,13 @@ function descriptionChange(e) {
             if (tasksDom.length === createdTasks.length) {
                 createdTasks[i].description = e.currentTarget.value;
                 localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
-            }
+            } 
         }
-    }) 
+    }); 
 }
 
 function deleteTask(e) {
     createdTasks = createdTasks.filter(task => e.currentTarget.previousElementSibling.value !== task.description && task !== undefined);
-    console.log(e.currentTarget)
-    console.dir(e.currentTarget)
     localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
     e.currentTarget.parentElement.remove();
     progressFunc();
@@ -200,8 +220,6 @@ initListeners();
 
 window.addEventListener('load', () => {
     const getTasks = JSON.parse(localStorage.getItem('saveTasks'));
-    console.log(getTasks);
-
     if (getTasks !== null) {
         for (const task of getTasks) {
             createdTasks.push(task);
@@ -212,9 +230,4 @@ window.addEventListener('load', () => {
     }
 })
 
-
-//дата 
-// const a = new Date():
-// let year = `${d.getFullYear()} + ${d.getMonth()+1} + ${d.getDate()} ${d.getHours()} + ${d.getMinutes()}`;
-// console.log(year)
 
