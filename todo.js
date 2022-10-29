@@ -58,6 +58,10 @@ function taskListItemDom({complete, description, date} = {}) {
     return li;
 }
 
+function saveToStorage(name, data) {
+    localStorage.setItem(name, JSON.stringify(data));
+}
+
 let createdTasks = [];
 
 const createTaskListener = ({ key, target: { value } } = {}) => {
@@ -76,7 +80,7 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
 
         createdTasks.push(task);
         taskListDom.appendChild(taskListItemDom(task));
-        localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
+        saveToStorage('saveTasks', createdTasks);
         progressFunc();
         addNewTask.value = '';
     }
@@ -89,7 +93,7 @@ function taskStatus(e) {
             task.complete = e.currentTarget.checked;
             task.date = task.complete ? completedDateGenerator() : 'NOT READY YET';
             e.currentTarget.parentElement.children[0].children[1].textContent = task.date;            
-            localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
+            saveToStorage('saveTasks', createdTasks);
         }
     }
     progressFunc();
@@ -106,15 +110,15 @@ function descriptionChange(e) {
         if (e.currentTarget.parentElement === taskDom) {
             if (tasksDom.length === createdTasks.length) {
                 createdTasks[i].description = e.currentTarget.value;
-                localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
-            } 
+                saveToStorage('saveTasks', createdTasks);
+            }
         }
     }); 
 }
 
 function deleteTask(e) {
     createdTasks = createdTasks.filter(task => e.currentTarget.previousElementSibling.value !== task.description && task !== undefined);
-    localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
+    saveToStorage('saveTasks', createdTasks);
     e.currentTarget.parentElement.remove();
     progressFunc();
 }
@@ -229,5 +233,4 @@ window.addEventListener('load', () => {
         progressFunc();
     }
 })
-
 
