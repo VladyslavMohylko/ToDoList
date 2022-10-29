@@ -44,6 +44,10 @@ function taskListItemDom({complete, description} = {}) {
     return li;
 }
 
+function saveToStorage(name, data) {
+    localStorage.setItem(name, JSON.stringify(data));
+}
+
 let createdTasks = [];
 
 const createTaskListener = ({ key, target: { value } } = {}) => {
@@ -61,7 +65,7 @@ const createTaskListener = ({ key, target: { value } } = {}) => {
 
         createdTasks.push(task);
         taskListDom.appendChild(taskListItemDom(task));
-        localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
+        saveToStorage('saveTasks', createdTasks);
         progressFunc();
         addNewTask.value = '';
     }
@@ -72,7 +76,7 @@ function taskStatus(e) {
     for (const task of createdTasks) {
         if (task.description === e.currentTarget.nextSibling.value) {
             task.complete = e.currentTarget.checked;
-            localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
+            saveToStorage('saveTasks', createdTasks);
         }
     }
     progressFunc();
@@ -84,20 +88,7 @@ function descriptionChange(e) {
         if (e.currentTarget.parentElement === taskDom) {
             if (tasksDom.length === createdTasks.length) {
                 createdTasks[i].description = e.currentTarget.value;
-                localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
-            } else {
-                const tasksFoundMap = createdTasks.map(task => {
-                    if (task.description === addNewTask.value) {
-                        return task;
-                    }
-                });
-                tasksFoundMap.forEach((task, index) => {
-                    if (task !== undefined) { 
-                        createdTasks[index].description = e.currentTarget.value;
-                        searchRedAlert();
-                        localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
-                    }
-                });
+                saveToStorage('saveTasks', createdTasks);
             }
         }
     });
@@ -105,9 +96,7 @@ function descriptionChange(e) {
 
 function deleteTask(e) {
     createdTasks = createdTasks.filter(task => e.currentTarget.previousElementSibling.value !== task.description && task !== undefined);
-    console.log(e.currentTarget)
-    console.dir(e.currentTarget)
-    localStorage.setItem('saveTasks', JSON.stringify(createdTasks));
+    saveToStorage('saveTasks', createdTasks);
     e.currentTarget.parentElement.remove();
     progressFunc();
 }
@@ -213,7 +202,6 @@ initListeners();
 
 window.addEventListener('load', () => {
     const getTasks = JSON.parse(localStorage.getItem('saveTasks'));
-    console.log(getTasks);
 
     if (getTasks !== null) {
         for (const task of getTasks) {
@@ -226,8 +214,5 @@ window.addEventListener('load', () => {
 })
 
 
-//дата 
-// const a = new Date():
-// let year = `${d.getFullYear()} + ${d.getMonth()+1} + ${d.getDate()} ${d.getHours()} + ${d.getMinutes()}`;
-// console.log(year)
+
 
