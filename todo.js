@@ -104,12 +104,7 @@ function descriptionChange(e) {
             }
         });
     } else {
-        const tasksFoundFilter = createdTasks.filter(task => {
-            if (task.description.match(addNewTask.value)) {
-                return true;
-            }
-        });
-
+        const tasksFoundFilter = createdTasks.filter(({ description }) => description.match(addNewTask.value));
         tasksDom.forEach((taskDom, index) => {
             if (e.currentTarget.parentElement === taskDom) {
                 for (const task of createdTasks) {
@@ -145,7 +140,7 @@ function domTasksRemove(tasks) {
 
 function searchTaskFunc() {
     const tasksDom = [...taskListDom.children];
-    const tasksFound = createdTasks.filter(task => task.description.match(addNewTask.value));
+    const tasksFound = createdTasks.filter(({ description }) => description.match(addNewTask.value));
     if (tasksFound.length !== 0) {
         findMessage.style.visibility = 'visible';
         domTasksRemove(tasksDom);
