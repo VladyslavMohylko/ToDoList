@@ -114,12 +114,14 @@ button {
     background-color: palevioletred;
     opacity: 0.5;
 }
-.yellow {
-    background-color: yellow;
-}
+
 .green {
     background-color: green;
     opacity: 0.8;
+}
+.yellow {
+    background-color: yellow;
+    opacity: 0.5;
 }
 .red {
     background-color: red;
