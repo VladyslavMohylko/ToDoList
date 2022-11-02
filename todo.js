@@ -1,6 +1,6 @@
 const taskListDom = document.querySelector('ul');
 const addNewTask = document.getElementById('addTask');
-const searchTask = document.querySelector('#searchTask');
+const clearAllTasks = document.querySelector('#clearAll');
 const progress = document.getElementById('progress');
 const findMessage = document.getElementById('searchMessage');
 
@@ -226,6 +226,14 @@ const progressFunc = () => {
     progress.textContent = `Progress: ${completeCount} / ${taskCount}`;
 }
 
+const clearAllTasksFunc = () => {
+    const tasksDom = [...taskListDom.children];
+    domTasksRemove(tasksDom);
+    localStorage.removeItem('saveTasks');
+    createdTasks = [];
+    progressFunc();
+}
+
 const highlight = (e) => {
     const target = e.currentTarget;
     target.classList.add('highlight');
@@ -245,7 +253,7 @@ function initListeners() {
 
     addNewTask.addEventListener('input', searchAlertAndRebuilding);
 
-    searchTask.addEventListener('click', searchTaskFunc);
+    clearAllTasks.addEventListener('click', clearAllTasksFunc);
 }
 
 initListeners();
